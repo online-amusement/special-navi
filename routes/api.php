@@ -14,6 +14,12 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::prefix("member")->group(function () {
+    Route::post('/temporary-registration', [App\Http\Controllers\EmailVerificationController::class, 'temporaryRegistration']);
+    Route::post('/official-registration', [App\Http\Controllers\EmailVerificationController::class, 'officialRegistration']);
+    Route::post("/search-address", [App\Http\Controllers\EmailVerificationController::class, "searchAddress"]);
+});
+
+Route::middleware(['cors'])->group(function () {
+    
 });

@@ -18,8 +18,8 @@ class MemberService
         return $this->memberRepository->findBy($field, $operator, $value);
     }
 
-    public function updateMember($name, $password, $apiToken, $postalCode, $address, $tel, $status)
+    public function updateMember($name, $password, $apiToken, $postalCode, $address, $address2, $address3, $tel)
     {
-        return $this->memberRepository->updateMember($name, $password, $apiToken, $postalCode, $address, $tel, $status);
+        return $this->memberRepository->updateMember($name, $password, $apiToken, $postalCode, $address, $address2, $address3, $tel);
     }
 }

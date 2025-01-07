@@ -5,15 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class EmailVerification extends Model
+class TemporaryRegistration extends Model
 {
     use HasFactory;
 
-    protected $table = "temporary_registration";
+    protected $table = "temporary_ragistration";
 
-    protected $fillable = [
-        "email",
-        "token",
-        "expiration_date"
+    protected $guarded = [
+        'id',
     ];
 }

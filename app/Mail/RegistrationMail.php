@@ -41,7 +41,7 @@ class RegistrationMail extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'emails.temporaryRegistration.',
+            view: 'emails.temporaryRegistration',
             with: [
                 'token' => $this->token
             ]

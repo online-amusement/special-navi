@@ -8,6 +8,9 @@ use App\Mail\RegistrationMail;
 use Illuminate\Support\Str;
 use App\Services\EmailVerificationService;
 use App\Services\MemberService;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Http\Client\Response;
 
 class EmailVerificationController extends Controller
 {
@@ -23,57 +26,69 @@ class EmailVerificationController extends Controller
     public function temporaryRegistration(Request $request) 
     {
         $email = $request->get("email");
-
+        
         $token = Str::random(80);
-
+        
         //もしmembersテーブルにemailが存在してない
         $existMail = $this->emailVerificationService->isExistEmail($email);
 
         if($existMail == false) {
-            //仮登録
-            $temporary = $this->emailVerificationService->temporaryRegistration($email, $token);
+            
+            $temporary = $this->emailVerificationService->temporaryRegist($email, $token);
+
             //メンバーテーブルに仮登録
             $member = $this->emailVerificationService->temporaryMember($email, $token);
 
             //メールアドレス宛にメールを送信
-            Mail::to($email)->send(new RegistrationMail($token));
+            Mail::to($email)->send(new \App\Mail\RegistrationMail($token));
 
-            //request
+            //レスポンス
             return response()->json([
                 "result" => "OK",
                 "status" => 200,
-                "message" => "仮登録しました。本登録へ進んでください。"
+                "message" => "仮登録しました。本登録へ進んでください。",
+                "data" => $member
             ]);
         }
 
         return response()->json([
             "result" => "NG",
             "status" => 401,
-            "message" => "仮登録できませんでした。"
+            "message" => "仮登録できませんでした。すでに存在するアドレスです。"
         ]);
 
     }
-
     //本登録
     public function officialRegistration(Request $request)
     {
         $name = $request->get("name");
         $password = $request->get("password");
-        $apiToken = $request->get("api_token");
-        $postalCode = $request->get("postal_code");
+        $apiToken = $request->get("apiToken");
+        $postalCode = $request->get("postalCode");
         $address = $request->get("address");
+        $address2 = $request->get("address2");
+        $address3 = $request->get("address3");
         $tel = $request->get("tel");
 
+        //トークンが一致してるものがあるか
         $memberToken = $this->memberService->findBy("api_token", "=", $apiToken);
+
+        //有効期限が切れてないか
+        $verifyToken = $this->emailVerificationService->findBy("token", "=", $apiToken);
+        
+        //現在日時
+        $now = Carbon::now();
+        
         //もしトークンが一致していれば
-        if($apiToken == $memberToken) {
+        if($memberToken && $verifyToken->expiration_date > $now) {
             //memberの更新
-            $member = $this->memberService->updateMember($name, $password, $apiToken, $postalCode, $address, $tel, $status = 1);
+            $member = $this->memberService->updateMember($name, $password, $apiToken, $postalCode, $address, $address2, $address3, $tel);
 
             return response()->json([
                 "result" => "OK",
                 "status" => 200,
-                "message" => "本登録が完了しました。"
+                "message" => "本登録が完了しました。",
+                "data" => $member
             ]);
         }
 
@@ -83,5 +98,30 @@ class EmailVerificationController extends Controller
             "message" => "本登録できませんでした。"
         ]);
         
+    }
+
+    //住所取得
+    public function searchAddress(Request $request)
+    {
+        $postalCode = $request->get("postalCode");
+        
+        $response = Http::get("https://zipcloud.ibsnet.co.jp/api/search?zipcode=", [
+            "zipcode" => $postalCode
+        ]);
+        
+        if($response->json()['status'] === 200 && !empty($response->json()['results'])) {
+            $result = $response->json()['results'][0];
+            $address = $result["address1"];
+            $result = ["address" => $address, "address2" => $result["address2"], "address3" => $result["address3"]];
+            
+            return response()->json([
+                "result" => "OK",
+                "status" => 200,
+                "message" => "データを取得しました。",
+                "data" => $result
+            ]);
+        }else {
+            session()->flash('error', '郵便番号に該当する住所が見つかりません。');
+        }
     }
 }

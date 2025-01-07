@@ -12,9 +12,14 @@ class EmailVerificationService
         $this->emailVerificationRepository = $emailVerificationRepository;
     }
 
-    public function temporaryRegistration($email, $token)
+    public function findBy($field, $operator, $value)
     {
-        return $this->emailVerificationRepository->temporaryRegistration($email, $token);
+        return $this->emailVerificationRepository->findBy($field, $operator, $value);
+    }
+
+    public function temporaryRegist($email, $token)
+    {
+        return $this->emailVerificationRepository->temporaryRegist($email, $token);
     }
 
     public function temporaryMember($email, $token)
@@ -24,6 +29,6 @@ class EmailVerificationService
 
     public function isExistEmail($email)
     {
-        return $this->isExistEmail($email);
+        return $this->emailVerificationRepository->isExistEmail($email);
     }
 }
