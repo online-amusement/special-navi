@@ -23,19 +23,15 @@ class MemberRepository
             ->first();
     }
 
-    public function updateMember($name, $password, $apiToken, $postalCode, $address, $address2, $address3, $tel)
+    public function updateMember($name, $password, $token, $postalCode, $address, $address2, $address3, $tel)
     {
-        $verifyToken = $apiToken;
-        $token = Str::random(80);
-        $updateToken = $token;
         $status = 1;
         return $this->member
             ->newQuery()
-            ->where("api_token", "=", $verifyToken)
+            ->where("api_token", "=", $token)
             ->update([
                 "name" => $name,
                 "password" => Hash::make($password),
-                "api_token" => $updateToken,
                 "postal_code" => $postalCode,
                 "address" => $address,
                 "address2" => $address2,

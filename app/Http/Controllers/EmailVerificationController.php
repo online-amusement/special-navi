@@ -63,7 +63,7 @@ class EmailVerificationController extends Controller
     {
         $name = $request->get("name");
         $password = $request->get("password");
-        $apiToken = $request->get("apiToken");
+        $token = $request->get("token");
         $postalCode = $request->get("postalCode");
         $address = $request->get("address");
         $address2 = $request->get("address2");
@@ -71,31 +71,31 @@ class EmailVerificationController extends Controller
         $tel = $request->get("tel");
 
         //トークンが一致してるものがあるか
-        $memberToken = $this->memberService->findBy("api_token", "=", $apiToken);
+        $memberToken = $this->memberService->findBy("api_token", "=", $token);
 
         //有効期限が切れてないか
-        $verifyToken = $this->emailVerificationService->findBy("token", "=", $apiToken);
+        $verifyToken = $this->emailVerificationService->findBy("token", "=", $token);
         
         //現在日時
         $now = Carbon::now();
         
         //もしトークンが一致していれば
-        if($memberToken && $verifyToken->expiration_date > $now) {
-            //memberの更新
-            $member = $this->memberService->updateMember($name, $password, $apiToken, $postalCode, $address, $address2, $address3, $tel);
-
+        if(!$memberToken && !$verifyToken->expiration_date > $now) {
             return response()->json([
-                "result" => "OK",
-                "status" => 200,
-                "message" => "本登録が完了しました。",
-                "data" => $member
+                "result" => "NG",
+                "status" => 401,
+                "message" => "本登録できませんでした。"
             ]);
         }
 
+        //memberの更新
+        $member = $this->memberService->updateMember($name, $password, $token, $postalCode, $address, $address2, $address3, $tel);
+
         return response()->json([
-            "result" => "NG",
-            "status" => 401,
-            "message" => "本登録できませんでした。"
+            "result" => "OK",
+            "status" => 200,
+            "message" => "本登録が完了しました。",
+            "token" => $memberToken->api_token
         ]);
         
     }

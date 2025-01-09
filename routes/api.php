@@ -17,9 +17,10 @@ use Illuminate\Support\Facades\Route;
 Route::prefix("member")->group(function () {
     Route::post('/temporary-registration', [App\Http\Controllers\EmailVerificationController::class, 'temporaryRegistration']);
     Route::post('/official-registration', [App\Http\Controllers\EmailVerificationController::class, 'officialRegistration']);
-    Route::post("/search-address", [App\Http\Controllers\EmailVerificationController::class, "searchAddress"]);
+    Route::post('/search-address', [App\Http\Controllers\EmailVerificationController::class, "searchAddress"]);
 });
 
 Route::middleware(['cors'])->group(function () {
-    
+    Route::post('/login', [App\Http\Controllers\MemberController::class, "login"]);
+    Route::post('/me', [App\Http\Controllers\MemberController::class, "me"]);
 });
