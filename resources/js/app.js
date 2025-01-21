@@ -14,9 +14,11 @@ import { createApp } from 'vue';
  */
 
 const app = createApp({});
+import MemberComponent from './components/member/MemberComponent.vue';
+import MemberEditComponent from './components/member/MemberEditComponent.vue';
 
-import ExampleComponent from './components/ExampleComponent.vue';
-app.component('example-component', ExampleComponent);
+app.component('member-component', MemberComponent);
+app.component('member-edit-component', MemberEditComponent);
 
 /**
  * The following block of code may be used to automatically register your
@@ -35,5 +37,4 @@ app.component('example-component', ExampleComponent);
  * an "id" attribute of "app". This element is included with the "auth"
  * scaffolding. Otherwise, you will need to add an element yourself.
  */
-
 app.mount('#app');
