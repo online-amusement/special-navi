@@ -58,6 +58,9 @@
                                     <a class="dropdown-item" href="{{ route('home') }}">
                                         {{ __('メンバー管理') }}
                                     </a>
+                                    <a class="dropdown-item" href="{{ route('category-tag') }}">
+                                        {{ __('カテゴリータグ管理') }}
+                                    </a>
                                     <a class="dropdown-item" href="{{ route('logout') }}"
                                        onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">

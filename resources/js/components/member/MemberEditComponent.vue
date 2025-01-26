@@ -6,9 +6,9 @@
         <input type="hidden" name="_token" v-model="csrf">
         <div class="contents">
             <div class="id-contents">
-            <label class="id-title">ID</label>
-            <input type="text" id="id" name="id" readonly v-model="formData.id">
-            <span v-if="props.errors?.id" class="error">{{ props.errors.id[0] }}</span>
+              <label class="id-title">ID</label>
+              <input type="text" id="id" name="id" readonly v-model="formData.id">
+              <span v-if="props.errors?.id" class="error">{{ props.errors.id[0] }}</span>
           </div>
           <div class="name-contents">
             <label class="name-title">名前</label>
@@ -93,7 +93,7 @@
       formData.address2 = parsedOldData.address2 || '';
       formData.address3 = parsedOldData.address3 || '';
       formData.tel = parsedOldData.tel || '';
-      formData.status = parsedOldData.status || '';
+      formData.status = parsedOldData.status || '0';
     } else if (props.old) {
       formData.id = props.old.id || '';
       formData.name = props.old.name || '';
@@ -103,7 +103,7 @@
       formData.address2 = props.old.address2 || '';
       formData.address3 = props.old.address3 || '';
       formData.tel = props.old.tel || '';
-      formData.status = props.old.status || '';
+      formData.status = props.old.status || '0';
     }
   });
   </script>
