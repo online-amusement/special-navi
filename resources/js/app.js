@@ -16,9 +16,13 @@ import { createApp } from 'vue';
 const app = createApp({});
 import MemberComponent from './components/member/MemberComponent.vue';
 import MemberEditComponent from './components/member/MemberEditComponent.vue';
+import CategoryTagComponent from './components/categoryTag/CategoryTagComponent.vue';
+import CategoryTagEditComponent from './components/categoryTag/CategoryTagEditComponent.vue';
 
 app.component('member-component', MemberComponent);
 app.component('member-edit-component', MemberEditComponent);
+app.component('category-tag-component', CategoryTagComponent);
+app.component('category-tag-edit-component', CategoryTagEditComponent);
 
 /**
  * The following block of code may be used to automatically register your

@@ -1,6 +1,10 @@
 <?php
 
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\CategoryTagController;
+use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,12 +24,20 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::middleware('auth')->group( function() {
-    Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+    Route::get('/home', [HomeController::class, 'index'])->name('home');
     
     Route::prefix("member")->group(function() {
-        Route::get('/create', [App\Http\Controllers\HomeController::class, 'create'])->name('member.create');
-        Route::get('/{id}/edit', [App\Http\Controllers\HomeController::class, 'edit'])->name('member.edit');
-        Route::post('/save', [App\Http\Controllers\HomeController::class, 'save'])->name('member.save');
-        Route::get('/{id}/delete', [App\Http\Controllers\HomeController::class, 'delete'])->name('member.delete');
+        Route::get('/create', [HomeController::class, 'create'])->name('member.create');
+        Route::get('/{id}/edit', [HomeController::class, 'edit'])->name('member.edit');
+        Route::post('/save', [HomeController::class, 'save'])->name('member.save');
+        Route::get('/{id}/delete', [HomeController::class, 'delete'])->name('member.delete');
+    });
+
+    Route::prefix("category-tag")->group(function() {
+        Route::get('/', [CategoryTagController::class, 'index'])->name('category-tag');
+        Route::get('/create', [CategoryTagController::class, 'create'])->name('category-tag.create');
+        Route::get('/{id}/edit', [CategoryTagController::class, 'edit'])->name('category-tag.edit');
+        Route::post('/save', [CategoryTagController::class, 'save'])->name('categoryTag.save');
+        Route::get('/{id}/delete', [CategoryTagController::class, 'delete'])->name('category-tag.delete');
     });
 });
