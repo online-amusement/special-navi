@@ -16,6 +16,13 @@ class CategoryTagRepository
         $this->categoryTag = $categoryTag;
     }
 
+    public function getAll()
+    {
+        return $this->categoryTag
+            ->newQuery()
+            ->get();
+    }
+
     public function findBy($field, $operator, $value)
     {
         return $this->categoryTag
@@ -37,10 +44,12 @@ class CategoryTagRepository
 
         if($sort == "降順") {
             return $categoryTags 
+                ->with("subCategoryTags")
                 ->orderBy("id", self::DESC)
                 ->paginate(10);
         }else {
             return $categoryTags
+                ->with("subCategoryTags")
                 ->orderBy("id", self::ASC)
                 ->paginate(10);
         }

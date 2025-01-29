@@ -1,11 +1,15 @@
 <template>
     <div class="container">
         <div class="title-contents">
-            <h1 class="title">カテゴリータグ管理</h1>
+            <h1 class="title">サブカテゴリータグ管理</h1>
         </div>
         <div class="contents">
-            <form action="/category-tag" method="GET" >
+            <form action="/sub-category-tag" method="GET">
                 <div class="search-contents">
+                    <div class="search-name">
+                        <label class="name-title">種別ID</label>
+                        <input v-model="categoryTagId" type="text" class="categoryTagId" name="categoryTagId" id="categoryTagId" />
+                    </div>
                     <div class="search-name">
                         <label class="name-title">名前</label>
                         <input v-model="name" type="text" class="name" name="name" id="name" />
@@ -34,28 +38,32 @@
             </form>
             <div class="table">
                 <button type="submit" class="update-btn">
-                    <a class="create-btn" :href=" '/category-tag/create' ">作成</a>
+                    <a class="create-btn" :href=" '/sub-category-tag/create' ">作成</a>
                 </button>
                 <table class="table">
                     <thead>
                         <tr>
                             <th scope="col">ID</th>
-                            <th>タグ名</th>
+                            <th scope="col">種別ID</th>
+                            <th>種別名</th>
+                            <th>職種名</th>
                             <th>ステータス</th>
                             <th>操作</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="(categoryTag, index) in categorytagsData" :key="index">
-                            <td>{{ categoryTag.id }}</td>
-                            <td>{{ categoryTag.name }}</td>
-                            <td>{{ categoryTag.status }}</td>
+                        <tr v-for="(subCayegory, index) in subCayegoryTagData" :key="index">
+                            <td>{{ subCayegory.id }}</td>
+                            <td>{{ subCayegory.category_tag.id }}</td>
+                            <td>{{ subCayegory.category_tag.name }}</td>
+                            <td>{{ subCayegory.name }}</td>
+                            <td>{{ subCayegory.status }}</td>
                             <td class="btn-area">
                                 <button type="submit" class="update-btn">
-                                    <a class="edit-btn" :href=" '/category-tag/' + categoryTag.id + '/edit' ">更新</a>
+                                    <a class="edit-btn" :href=" '/sub-category-tag/' + subCayegory.id + '/edit' ">更新</a>
                                 </button>
                                 <button type="submit" class="dele-btn">
-                                    <a class="delete-btn" :href=" '/category-tag/' + categoryTag.id + '/delete' ">削除</a>
+                                    <a class="delete-btn" :href=" '/sub-category-tag/' + subCayegory.id + '/delete' ">削除</a>
                                 </button>
                             </td>
                         </tr>
@@ -75,10 +83,11 @@
 <script lang="ts" setup>
 import { onMounted, ref } from 'vue';
 
-const props = defineProps(['categorytags']);
-const categorytags = ref(props.categorytags)
-const categorytagsData = ref(categorytags.value.data)
-const paginations = ref(categorytags.value.links);
+const props = defineProps(['sub_category']);
+const subCayegoryTag = ref(props.sub_category)
+const subCayegoryTagData = ref(subCayegoryTag.value.data)
+const paginations = ref(subCayegoryTag.value.link);
+const categoryTagId = ref();
 const name = ref('');
 const status = ref([
     {text: '表示', value: 0},
@@ -90,7 +99,7 @@ const sort = ref([
 ])
 
 onMounted(() => {
-    console.log(categorytagsData.value)
+    console.log(props.sub_category)
 })
 
 </script>

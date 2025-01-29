@@ -13,6 +13,11 @@ class CategoryTagService
         $this->categoryTagRepository = $categoryTagRepository;
     }
 
+    public function getAll()
+    {
+        return $this->categoryTagRepository->getAll();
+    }
+
     public function findBy($field, $operator, $value)
     {
         return $this->categoryTagRepository->findBy($field, $operator, $value);

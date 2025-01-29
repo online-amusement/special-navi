@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\SubCategoryTag;
 
 class CategoryTag extends Model
 {
@@ -14,4 +15,9 @@ class CategoryTag extends Model
     protected $guarded = [
         'id'
     ];
+
+    public function subCategoryTags()
+    {
+        return $this->hasMany(SubCategoryTag::class);
+    }
 }

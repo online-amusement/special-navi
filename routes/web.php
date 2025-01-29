@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\CategoryTagController;
+use App\Http\Controllers\SubCategoryTagController;
 use Illuminate\Support\Facades\Auth;
 
 /*
@@ -39,5 +40,13 @@ Route::middleware('auth')->group( function() {
         Route::get('/{id}/edit', [CategoryTagController::class, 'edit'])->name('category-tag.edit');
         Route::post('/save', [CategoryTagController::class, 'save'])->name('categoryTag.save');
         Route::get('/{id}/delete', [CategoryTagController::class, 'delete'])->name('category-tag.delete');
+    });
+
+    Route::prefix("sub-category-tag")->group(function() {
+        Route::get('/', [SubCategoryTagController::class, 'index'])->name('sub-category-tag');
+        Route::get('/create', [SubCategoryTagController::class, 'create'])->name('sub-category-tag.create');
+        Route::get('/{id}/edit', [SubCategoryTagController::class, 'edit'])->name('sub-category-tag.edit');
+        Route::post('/save', [SubCategoryTagController::class, 'save'])->name('sub-category-tag.save');
+        Route::get('/{id}/delete', [SubCategoryTagController::class, 'delete'])->name('sub-category-tag.delete');
     });
 });
