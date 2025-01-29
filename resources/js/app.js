@@ -18,11 +18,15 @@ import MemberComponent from './components/member/MemberComponent.vue';
 import MemberEditComponent from './components/member/MemberEditComponent.vue';
 import CategoryTagComponent from './components/categoryTag/CategoryTagComponent.vue';
 import CategoryTagEditComponent from './components/categoryTag/CategoryTagEditComponent.vue';
+import SubCategoryTagComponent from './components/subCategoryTag/SubCategoryTagComponent.vue';
+import SubCategoryTagEditComponent from './components/subCategoryTag/SubCategoryTagEditComponent.vue';
 
 app.component('member-component', MemberComponent);
 app.component('member-edit-component', MemberEditComponent);
 app.component('category-tag-component', CategoryTagComponent);
 app.component('category-tag-edit-component', CategoryTagEditComponent);
+app.component('sub-category-tag-component', SubCategoryTagComponent);
+app.component('sub-category-tag-edit-component', SubCategoryTagEditComponent);
 
 /**
  * The following block of code may be used to automatically register your

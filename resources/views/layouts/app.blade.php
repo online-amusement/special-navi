@@ -61,6 +61,9 @@
                                     <a class="dropdown-item" href="{{ route('category-tag') }}">
                                         {{ __('カテゴリータグ管理') }}
                                     </a>
+                                    <a class="dropdown-item" href="{{ route('sub-category-tag') }}">
+                                        {{ __('サブカテゴリータグ管理') }}
+                                    </a>
                                     <a class="dropdown-item" href="{{ route('logout') }}"
                                        onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
