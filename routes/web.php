@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\CategoryTagController;
 use App\Http\Controllers\SubCategoryTagController;
+use App\Http\Controllers\ModelLineupController;
 use Illuminate\Support\Facades\Auth;
 
 /*
@@ -48,5 +49,13 @@ Route::middleware('auth')->group( function() {
         Route::get('/{id}/edit', [SubCategoryTagController::class, 'edit'])->name('sub-category-tag.edit');
         Route::post('/save', [SubCategoryTagController::class, 'save'])->name('sub-category-tag.save');
         Route::get('/{id}/delete', [SubCategoryTagController::class, 'delete'])->name('sub-category-tag.delete');
+    });
+
+    Route::prefix("model-lineup")->group(function() {
+        Route::get('/', [ModelLineupController::class, 'index'])->name('model-lineup');
+        Route::get('/create', [ModelLineupController::class, 'create'])->name('model-lineup.create');
+        Route::get('/{id}/edit', [ModelLineupController::class, 'edit'])->name('model-lineup.edit');
+        Route::post('/save', [ModelLineupController::class, 'save'])->name('model-lineup.save');
+        Route::get('/{id}/delete', [ModelLineupController::class, 'delete'])->name('model-lineup.delete');
     });
 });
