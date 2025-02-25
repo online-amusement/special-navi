@@ -20,6 +20,8 @@ import CategoryTagComponent from './components/categoryTag/CategoryTagComponent.
 import CategoryTagEditComponent from './components/categoryTag/CategoryTagEditComponent.vue';
 import SubCategoryTagComponent from './components/subCategoryTag/SubCategoryTagComponent.vue';
 import SubCategoryTagEditComponent from './components/subCategoryTag/SubCategoryTagEditComponent.vue';
+import ModelLineupComponent from './components/modelLineup/ModelLineupComponent.vue';
+import ModelLineupEditComponent from './components/modelLineup/ModelLineupEditComponent.vue';
 
 app.component('member-component', MemberComponent);
 app.component('member-edit-component', MemberEditComponent);
@@ -27,6 +29,9 @@ app.component('category-tag-component', CategoryTagComponent);
 app.component('category-tag-edit-component', CategoryTagEditComponent);
 app.component('sub-category-tag-component', SubCategoryTagComponent);
 app.component('sub-category-tag-edit-component', SubCategoryTagEditComponent);
+app.component('model-lineup-component', ModelLineupComponent);
+app.component('model-lineup-edit-component', ModelLineupEditComponent);
+
 
 /**
  * The following block of code may be used to automatically register your
