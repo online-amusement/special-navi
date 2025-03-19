@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\CategoryTagController;
+use App\Http\Controllers\GooglePlaceApiController;
 use App\Http\Controllers\SubCategoryTagController;
 use App\Http\Controllers\ModelLineupController;
 use Illuminate\Support\Facades\Auth;
