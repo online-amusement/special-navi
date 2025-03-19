@@ -23,4 +23,8 @@ Route::prefix("member")->group(function () {
 Route::middleware(['cors'])->group(function () {
     Route::post('/login', [App\Http\Controllers\MemberController::class, "login"]);
     Route::post('/me', [App\Http\Controllers\MemberController::class, "me"]);
+
+    Route::prefix("places")->group(function() {
+        Route::get('/meal-info', [App\Http\Controllers\GooglePlaceApiController::class, "mealInfo"]);
+    });
 });
