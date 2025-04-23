@@ -8,31 +8,30 @@
                 <div class="search-contents">
                     <div class="search-name">
                         <label class="name-title">種別ID</label>
-                        <input v-model="categoryTagId" type="text" class="categoryTagId" name="categoryTagId" id="categoryTagId" />
+                        <input v-model="categoryTagId" type="text" class="categoryTagId" name="searchCategoryTagId" id="searchCategoryTagId" />
                     </div>
                     <div class="search-name">
                         <label class="name-title">名前</label>
-                        <input v-model="name" type="text" class="name" name="name" id="name" />
+                        <input v-model="name" type="text" class="name" name="searchName" id="searchName" />
                     </div>
                     <div class="search-status">
                         <label class="status-title">ステータス</label>
-                        <select v-model="status" type="text" class="status" name="status" id="status">
-                            <option :value="0">表示</option>
-                            <option :value="1">非表示</option>
+                        <select v-model="selectedStatus" type="text" class="status" name="searchStatus" id="searchStatus">
+                            <option v-for="option in optionStatus" :key="option.value">{{ option.text }}</option>
+                            
                         </select>
                     </div>
                     <div class="search-sort">
                         <label class="sort-title">ソート</label>
-                        <select v-model="sort" class="sort" name="sort" id="sort">
-                            <option>降順</option>
-                            <option>昇順</option>
+                        <select v-model="selectedSort" class="sort" name="searchSort" id="searchSort">
+                            <option v-for="option in optionStatus" :key="option.value">{{ option.text }}</option>
                         </select>
                     </div>
                     <div class="search-btn">
-                        <button class="btn" type="submit">検索</button>
+                        <button @click="searchSubCategory()" class="btn" type="submit">検索</button>
                     </div>
                     <div class="search-clear-btn">
-                        <button class="clear-btn" type="submit">クリア</button>
+                        <button @click="clear()" class="clear-btn" type="submit">クリア</button>
                     </div>
                 </div>
             </form>
@@ -70,12 +69,13 @@
                     </tbody>
                 </table>
             </div>
-            <div class="paginate-contents">
-                <div class="paginate" v-for="(pagination, index) in paginations" :key="index">
-                    <button class="link-btn" type="submit" :class="{ 'gray' : pagination.active == true }">
-                        <a class="links" :href="pagination.url">{{ pagination.label.replaceAll('&amp;laquo; Previous', '<<').replaceAll('Next &amp;raquo;', '>>') }}</a>
-                    </button>
-                </div>
+        </div>
+        <div class="no-contents" v-if="subCayegoryTagData.length == 0">
+            <p class="warning">{{ "検索結果がありません。" }}</p>
+        </div>
+        <div class="paginate-contents">
+            <div class="paginate" v-for="(pagination, index) in subCayegoryTag.links" :key="index">
+                <button type="button" class="link-btn" :class="{ isSelected: pagination.active }" ><a href="#" @click.prevent="searchSubCategory(pagination.label)">{{ pagination.label.replaceAll('&amp;laquo; Previous', '<<').replaceAll('Next &amp;raquo;', '>>') }}</a></button>
             </div>
         </div>
     </div>
@@ -83,23 +83,84 @@
 <script lang="ts" setup>
 import { onMounted, ref } from 'vue';
 
+interface Options {
+    text: string,
+    value: string
+}
+
 const props = defineProps(['sub_category']);
 const subCayegoryTag = ref(props.sub_category)
 const subCayegoryTagData = ref(subCayegoryTag.value.data)
-const paginations = ref(subCayegoryTag.value.link);
 const categoryTagId = ref();
 const name = ref('');
-const status = ref([
+const optionStatus = ref<Options[]>([
     {text: '表示', value: 0},
     {text: '非表示', value: 1}
 ])
-const sort = ref([
-    {text: '昇順', value: 'asc'},
-    {text: '降順', value: 'desc'}
+const optionSort = ref<Options[]>([
+    {text: '昇順', value: '昇順'},
+    {text: '降順', value: '降順'}
 ])
+const selectedStatus = ref('');
+const selectedSort = ref('');
 
 onMounted(() => {
     console.log(props.sub_category)
+})
+
+const searchSubCategory = ((pageNum) => {
+    page.value = pageNum
+    const searchParams = new URLSearchParams(document.location.search)
+    const val = searchParams.get("page")
+    //urlのパラメータの値を変更
+    if(page.value == val) {
+        searchParams.set("page", page.value);
+    }else {
+        searchParams.set("page", page.value);
+    }
+    const params = {
+        'searchCategoryTagId': categoryTagId.value ? categoryTagId.value : "",
+        'searchName': name.value ? name.value : "",
+        'searchStatus': selectedStatus.value ? selectedStatus.value : "",
+        'searchSort': selectedSort.value ? selectedSort.value : "",
+        'page': page.value
+    }
+    for(let param of searchParams) {
+        params[param[0]] = param[1]
+    }
+    let baseUrl = subCayegoryTag.value.path;
+    let url = baseUrl + "?" + Object.entries(params).map((e) => {
+        let key = e[0];
+        let value = encodeURI(e[1]);
+        return `${key}=${value}`;
+    }).join("&");
+    location.href = url
+})
+
+const clear = (() => {
+    const searchParams = new URLSearchParams(document.location.search);
+    const val = searchParams.get("page");
+    searchParams.set("searchCategoryTagId", "");
+    searchParams.set("searchName", "");
+    searchParams.set("searchStatus", "");
+    searchParams.set("searchSort", "");
+    searchParams.set("page", "1");
+    const params = {
+        'searchCategoryTagId': categoryTagId.value ? categoryTagId.value : "",
+        'searchName' : name.value ? name.value : "",
+        'searchStatus' : selectedStatus.value ? selectedStatus.value : "",
+        'searchSort' : selectedSort.value ? selectedSort.value : "",
+        'page' : page.value
+    }
+    let baseUrl = subCayegoryTag.value.path
+    console.log(baseUrl);
+    let url = baseUrl + "?" + Object.entries(params).map((e) => {
+        console.log(e);
+        let key = e[0];
+        let value = encodeURI(e[1]);
+        return `${key}=${value}`;
+    }).join("&");
+    location.href = url
 })
 
 </script>
@@ -195,7 +256,13 @@ a {
 .link-btn {
     background: #00F;
 }
-.gray {
+.isSelected {
     background: #808080;
+}
+.warning {
+    display: flex;
+    justify-content: center;
+    font-weight: 900;
+    color: #F00;
 }
 </style>

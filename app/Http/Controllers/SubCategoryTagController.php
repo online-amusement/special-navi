@@ -20,14 +20,14 @@ class SubCategoryTagController extends Controller
 
     public function index(Request $request)
     {
-        $categoryTagId = $request->input('categoryTagId');
-        $name = $request->input('name');
-        $status = $request->input('status');
-        $sort = $request->input('sort');
+        $categoryTagId = $request->input('searchCategoryTagId');
+        $name = $request->input('searchName');
+        $status = $request->input('searchStatus');
+        $sort = $request->input('searchSort');
 
         $subCayegoryTag = $this->subCategoryTagRepositoryService->searchSubCategoryTag($categoryTagId, $name, $status, $sort);
 
-        $subCayegoryTag = $subCayegoryTag->withQueryString();
+        $subCayegoryTag = json_encode($subCayegoryTag);
 
         return view('sub-category-tag', compact('subCayegoryTag'));
     }

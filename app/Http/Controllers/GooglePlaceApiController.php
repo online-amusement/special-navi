@@ -27,5 +27,17 @@ class GooglePlaceApiController extends Controller
         ]);
     }
 
+    public function shoppingInfo(Request $request)
+    {
+        $allShoppingInfoData = $this->googlePlacesApiService->responseShoppingInfo();
+
+        return response()->json([
+            "result" => true,
+            "status" => 200,
+            "message" => "ショッピングの情報を取得しました。",
+            "data" => $allShoppingInfoData,
+        ]);
+    }
+
     
 }

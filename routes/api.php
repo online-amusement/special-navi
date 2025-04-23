@@ -26,5 +26,6 @@ Route::middleware(['cors'])->group(function () {
 
     Route::prefix("places")->group(function() {
         Route::get('/meal-info', [App\Http\Controllers\GooglePlaceApiController::class, "mealInfo"]);
+        Route::get('/shopping-info', [App\Http\Controllers\GooglePlaceApiController::class, "shoppingInfo"]);
     });
 });

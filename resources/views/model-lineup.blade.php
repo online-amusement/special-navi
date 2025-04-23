@@ -2,6 +2,6 @@
 
 @section('content')
     <model-lineup-component 
-        :model_lineups="{{ json_encode($modelLineups) }}" >
+        v-bind:model_lineups="{{ ($modelLineups) }}" >
     </model-lineup-component>
 @endsection

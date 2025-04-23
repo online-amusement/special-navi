@@ -2,7 +2,6 @@
 
 @section('content')
     <member-component 
-        :members="{{ json_encode($members) }}" 
-        :input="{{ json_encode(request()->input()) }}">
+        v-bind:members="{{ ($members) }}" >
     </member-component>
 @endsection
