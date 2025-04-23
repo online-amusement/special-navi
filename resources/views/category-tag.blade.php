@@ -2,8 +2,7 @@
 
 @section('content')
     <category-tag-component 
-        :categorytags="{{ json_encode($categoryTags) }}">
-
+        v-bind:categorytags="{{ ($categoryTags) }}">
     </category-tag-component>
 @endsection
 

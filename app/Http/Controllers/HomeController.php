@@ -25,14 +25,14 @@ class HomeController extends Controller
      */
     public function index(Request $request)
     {
-        $name = $request->input("name");
-        $email = $request->input("email");
-        $status = $request->input("status");
-        $sort = $request->input("sort");
+        $name = $request->input("searchName");
+        $email = $request->input("searchEmail");
+        $status = $request->input("searchStatus");
+        $sort = $request->input("searchSort");
 
         $members = $this->memberManagementService->searchMember($name, $email, $status, $sort);
 
-        $members = $members->withQueryString();
+        $members = json_encode($members);
 
         return view('home', compact('members'));
     }

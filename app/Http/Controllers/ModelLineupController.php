@@ -16,15 +16,15 @@ class ModelLineupController extends Controller
 
     public function index(Request $request)
     {
-        $name = $request->input("name");
-        $amount = $request->input("amount");
-        $startedAt = $request->input("startedAt");
-        $endedAt = $request->input("endedAt");
-        $sort = $request->input("sort");
+        $name = $request->input("searchName");
+        $amount = $request->input("searchAmount");
+        $startedAt = $request->input("searchStartedAt");
+        $endedAt = $request->input("searchEndedAt");
+        $sort = $request->input("searchSort");
 
         $modelLineups = $this->modelLineupService->searchModelLineup($name, $amount, $startedAt, $endedAt, $sort);
 
-        $modelLineups = $modelLineups->withQueryString();
+        $modelLineups = json_encode($modelLineups);
 
         return view("model-lineup", compact("modelLineups"));
     }

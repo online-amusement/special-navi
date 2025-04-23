@@ -7,29 +7,26 @@
             <div class="search-form">
                 <div class="name-search">
                     <label class="name-title">氏名</label>
-                    <input v-model="name" type="text" class="name" name="name" id="name"/>
+                    <input v-model="name" type="text" class="name" name="searchName" id="searchName"/>
                 </div>
                 <div class="email-search">
                     <label class="email-title">メールアドレス</label>
-                    <input v-model="email" type="text" class="email" name="email" id="email" />
+                    <input v-model="email" type="text" class="email" name="searchEmail" id="searchEmail" />
                 </div>
                 <div class="status-search">
                     <label class="status-title">ステータス</label>
-                    <select v-model="status" name="status" id="status">
-                        <option :value="0">仮登録</option>
-                        <option :value="1">通常</option>
-                        <option :value="2">退会</option>
+                    <select v-model="selectedStatus" class="status" name="searchStatus" id="searchStatus">
+                        <option v-for="option in statusOptions" :key="option.value" :value="option.value">{{ option.text }}</option>
                     </select>
                 </div>
                 <div class="sort-search">
                     <label class="sort-title">ソート</label>
-                    <select v-model="sort" class="sort" name="sort" id="sort">
-                        <option>降順</option>
-                        <option>昇順</option>
+                    <select v-model="selectedSort" class="sort" name="searchSort" id="searchSort">
+                        <option v-for="option in sortOptions" :key="option.value" :value="option.value">{{ option.text }}</option>
                     </select>
                 </div>
                 <div class="search-btn">
-                    <button type="submit" class="sent-btn" @click="sent">検索</button>
+                    <button type="button" class="sent-btn" @click.prevent="searchMember">検索</button>
                 </div>
                 <div class="clear-search-btn">
                     <button type="submit" class="sent-clear-btn" @click="clear">クリア</button>
@@ -78,11 +75,12 @@
                 </tbody>
             </table>
         </div>
+        <div class="no-contents" v-if="memberData.length == 0">
+            <p class="warning">{{ "検索結果がありません。" }}</p>
+        </div>
         <div class="paginate-contents">
-            <div class="paginate" v-for="(pagination, index) in paginations" :key="index">
-                <button class="link-btn" type="submit" :class="{ 'gray' : pagination.active == true }">
-                    <a @click="pagenation(pagination.label)" class="links" :disabled="url == null" :href="pagination.url">{{ pagination.label.replaceAll('&amp;laquo; Previous', '<<').replaceAll('Next &amp;raquo;', '>>') }}</a>
-                </button>
+            <div class="paginate" v-for="(pagination, index) in members.links" :key="index">
+                <button type="button" class="link-btn" :class="{ isSelected: pagination.active == true  }" ><a href="#" @click.prevent="searchMember(pagination.label)">{{ pagination.label.replaceAll('&amp;laquo; Previous', '<<').replaceAll('Next &amp;raquo;', '>>') }}</a></button>
             </div>
         </div>
     </div>
@@ -92,66 +90,84 @@
 import { Value } from "sass";
 import { ref, onMounted } from "vue";
 
-const props = defineProps(['members', 'input'])
+interface Option { text: string; value: string; }
+
+const props = defineProps(['members'])
 const members = ref(props.members)
 const memberData = ref(members.value.data)
-const name = ref("");
-const email = ref("");
-const status = ref([
-    { text: '仮登録', value: 0},
-    { text: '通常', value: 1},
-    { text: '退会', value: 2},
+const name = ref(null);
+const email = ref(null);
+const statusOptions = ref<Option[]>([
+    { text: '仮登録', value: "0"},
+    { text: '通常', value: "1"},
+    { text: '退会', value: "2"},
 ]);
-const sort = ref([
-    { text: '昇順', value: "asc"},
-    { text: '降順', value: "desc"},
+const sortOptions = ref<Option[]>([
+    { text: '昇順', value: "昇順"},
+    { text: '降順', value: "降順"},
 ])
-const paginations = ref(members.value.links);
-const initPage = ref(members.value.links);
-const rangeArray = ref([]);
-const pageList = ref([]);
-const deleNum1 = ref();
-const deleNum2 = ref();
-const url = ref();
-const active = ref('');
+const selectedStatus = ref("");
+const selectedSort = ref("");
+const page = ref("1");
 
 
 onMounted(() => {
-    console.log(paginations.value)
+    console.log(members.value)
 }) 
 
-const pagenation = ((currentPage) => {
-    /*console.log(currentPage)
-    //初期値
-    paginations.value = initPage.value
-    //削除したい番号
-    deleNum1.value = Number(currentPage) - 2;
-    deleNum2.value = Number(currentPage) - 3;
-    if(currentPage > "5") {
-        paginations.value = paginations.value.filter(page => page.label != String(deleNum1.value) && page.label != String(deleNum2.value))
-        .map(page => ({
-            url: page.url,
-            label: page.label,
-            active: page.active
-            })
-        );
-        url.value = paginations.value.find((element) => element.label == currentPage)
-        //location.replace(url.value["url"])
-        //location.href = url.value["url"]
-        history.replaceState(null, '', url.value["url"])
+const searchMember = ((pageNum) => {
+    page.value = pageNum
+    const searchParams = new URLSearchParams(document.location.search)
+    const val = searchParams.get("page")
+    //urlのパラメータの値を変更
+    if(page.value == val) {
+        searchParams.set("page", page.value);
     }else {
-        url.value = paginations.value[currentPage].url
-        console.log(url.value)
-        location.href = url.value
-    }*/
-})
-
-const sent = (() => { 
-    console.log(members.value)
+        searchParams.set("page", page.value);
+    }
+    const params = {
+        'searchName': name.value ? name.value : "",
+        'searchEmail': email.value ? email.value : "",
+        'searchStatus': selectedStatus.value ? selectedStatus.value : "",
+        'searchSort': selectedSort.value ? selectedSort.value : "",
+        'page': page.value
+    }
+    for(let param of searchParams) {
+        params[param[0]] = param[1]
+    }
+    let baseUrl = members.value.path;
+    let url = baseUrl + "?" + Object.entries(params).map((e) => {
+        let key = e[0];
+        let value = encodeURI(e[1]);
+        return `${key}=${value}`;
+    }).join("&");
+    location.href = url   
 })
 
 const clear = (() => {
-
+    const searchParams = new URLSearchParams(document.location.search);
+    const val = searchParams.get("page");
+    searchParams.set("searchName", "");
+    searchParams.set("searchEmail", "");
+    searchParams.set("searchStatus", "");
+    searchParams.set("searchSort", "");
+    searchParams.set("page", "1");
+    const params = {
+        'searchName' : name.value ? name.value : "",
+        'searchEmail' : email.value ? email.value : "",
+        'searchStatus' : selectedStatus.value ? selectedStatus.value : "",
+        'searchSort' : selectedSort.value ? selectedSort.value : "",
+        'page' : page.value
+    }
+    let baseUrl = members.value.path
+    console.log(baseUrl);
+    let url = baseUrl + "?" + Object.entries(params).map((e) => {
+        console.log(e);
+        let key = e[0];
+        let value = encodeURI(e[1]);
+        return `${key}=${value}`;
+    }).join("&");
+    location.href = url
 })
     
 </script>
@@ -227,9 +243,6 @@ a {
 .link-btn {
     background: #00F;
 }
-.gray {
-    background: #808080;
-}
 .update-btn {
     color: #fff;
     background: #00F;
@@ -243,5 +256,14 @@ a {
     margin: 0 2.5px;
     border: none;
     border-radius: 5px;
+}
+.warning {
+    display: flex;
+    justify-content: center;
+    font-weight: 900;
+    color: #F00;
+}
+.isSelected {
+    background: #808080;
 }
 </style>

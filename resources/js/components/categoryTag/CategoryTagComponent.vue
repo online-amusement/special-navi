@@ -8,27 +8,25 @@
                 <div class="search-contents">
                     <div class="search-name">
                         <label class="name-title">名前</label>
-                        <input v-model="name" type="text" class="name" name="name" id="name" />
+                        <input v-model="name" type="text" class="name" name="searchName" id="searchName" />
                     </div>
                     <div class="search-status">
                         <label class="status-title">ステータス</label>
-                        <select v-model="status" type="text" class="status" name="status" id="status">
-                            <option :value="0">表示</option>
-                            <option :value="1">非表示</option>
+                        <select v-model="selectedStatus" type="text" class="status" name="searchStatus" id="searchStatus">
+                            <option v-for="option in statusOptions" :key="option.value">{{ option.text }}</option>
                         </select>
                     </div>
                     <div class="search-sort">
                         <label class="sort-title">ソート</label>
-                        <select v-model="sort" class="sort" name="sort" id="sort">
-                            <option>降順</option>
-                            <option>昇順</option>
+                        <select v-model="selectedSort" class="sort" name="searchSort" id="searchSort">
+                            <option v-for="option in sortOptions" :key="option.value">{{ option.text }}</option>
                         </select>
                     </div>
                     <div class="search-btn">
                         <button class="btn" type="submit">検索</button>
                     </div>
                     <div class="search-clear-btn">
-                        <button class="clear-btn" type="submit">クリア</button>
+                        <button @click="clear()" class="clear-btn" type="submit">クリア</button>
                     </div>
                 </div>
             </form>
@@ -62,12 +60,13 @@
                     </tbody>
                 </table>
             </div>
-            <div class="paginate-contents">
-                <div class="paginate" v-for="(pagination, index) in paginations" :key="index">
-                    <button class="link-btn" type="submit" :class="{ 'gray' : pagination.active == true }">
-                        <a class="links" :href="pagination.url">{{ pagination.label.replaceAll('&amp;laquo; Previous', '<<').replaceAll('Next &amp;raquo;', '>>') }}</a>
-                    </button>
-                </div>
+        </div>
+        <div class="no-contents" v-if="categorytagsData.length == 0">
+            <p class="warning">{{ "検索結果がありません。" }}</p>
+        </div>
+        <div class="paginate-contents">
+            <div class="paginate" v-for="(pagination, index) in categorytags.links" :key="index">
+                <button type="button" class="link-btn" :class="{ isSelected: pagination.active == true  }" ><a href="#" @click.prevent="searchCategory(pagination.label)">{{ pagination.label.replaceAll('&amp;laquo; Previous', '<<').replaceAll('Next &amp;raquo;', '>>') }}</a></button>
             </div>
         </div>
     </div>
@@ -75,22 +74,80 @@
 <script lang="ts" setup>
 import { onMounted, ref } from 'vue';
 
+interface Options {
+     text: string, 
+     value: string 
+}
+
 const props = defineProps(['categorytags']);
 const categorytags = ref(props.categorytags)
 const categorytagsData = ref(categorytags.value.data)
-const paginations = ref(categorytags.value.links);
 const name = ref('');
-const status = ref([
+const statusOptions = ref<Options[]>([
     {text: '表示', value: 0},
     {text: '非表示', value: 1}
 ])
-const sort = ref([
-    {text: '昇順', value: 'asc'},
-    {text: '降順', value: 'desc'}
+const sortOptions = ref<Options[]>([
+    {text: '昇順', value: '昇順'},
+    {text: '降順', value: '降順'}
 ])
+const selectedStatus = ref('');
+const selectedSort = ref('');
 
 onMounted(() => {
     console.log(categorytagsData.value)
+})
+
+const searchCategory = ((pageNum) => {
+    page.value = pageNum
+    const searchParams = new URLSearchParams(document.location.search)
+    const val = searchParams.get("page")
+    //urlのパラメータの値を変更
+    if(page.value == val) {
+        searchParams.set("page", page.value);
+    }else {
+        searchParams.set("page", page.value);
+    }
+    const params = {
+        'searchName': name.value ? name.value : "",
+        'searchStatus': selectedStatus.value ? selectedStatus.value : "",
+        'searchSort': selectedSort.value ? selectedSort.value : "",
+        'page': page.value
+    }
+    for(let param of searchParams) {
+        params[param[0]] = param[1]
+    }
+    let baseUrl = categorytags.value.path;
+    let url = baseUrl + "?" + Object.entries(params).map((e) => {
+        let key = e[0];
+        let value = encodeURI(e[1]);
+        return `${key}=${value}`;
+    }).join("&");
+    location.href = url
+})
+
+const clear = (() => {
+    const searchParams = new URLSearchParams(document.location.search);
+    const val = searchParams.get("page");
+    searchParams.set("searchName", "");
+    searchParams.set("searchStatus", "");
+    searchParams.set("searchSort", "");
+    searchParams.set("page", "1");
+    const params = {
+        'searchName' : name.value ? name.value : "",
+        'searchStatus' : selectedStatus.value ? selectedStatus.value : "",
+        'searchSort' : selectedSort.value ? selectedSort.value : "",
+        'page' : page.value
+    }
+    let baseUrl = categorytags.value.path
+    console.log(baseUrl);
+    let url = baseUrl + "?" + Object.entries(params).map((e) => {
+        console.log(e);
+        let key = e[0];
+        let value = encodeURI(e[1]);
+        return `${key}=${value}`;
+    }).join("&");
+    location.href = url
 })
 
 </script>
@@ -186,7 +243,13 @@ a {
 .link-btn {
     background: #00F;
 }
-.gray {
+.warning {
+    display: flex;
+    justify-content: center;
+    font-weight: 900;
+    color: #F00;
+}
+.isSelected {
     background: #808080;
 }
 </style>

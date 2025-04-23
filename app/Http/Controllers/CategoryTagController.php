@@ -16,13 +16,13 @@ class CategoryTagController extends Controller
 
     public function index(Request $request)
     {
-        $name = $request->input('name');
-        $status = $request->input('status');
-        $sort = $request->input('sort');
+        $name = $request->input('searchName');
+        $status = $request->input('searchStatus');
+        $sort = $request->input('searchSort');
 
         $categoryTags = $this->categoryTagService->searchCategoryTag($name, $status, $sort);
 
-        $categoryTags = $categoryTags->withQueryString();
+        $categoryTags = json_encode($categoryTags);
 
         return view('category-tag', compact('categoryTags'));
     }
