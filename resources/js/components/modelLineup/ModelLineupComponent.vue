@@ -28,14 +28,14 @@
                     <div class="search-sort">
                         <label class="sort-title">ソート</label>
                         <select v-model="selectedSort"  class="sort" name="sort" id="sort">
-                            <option v-for="so in optionSort" :key="index" >{{ so.text }}</option>
+                            <option v-for="so in optionSort" :key="so.value" >{{ so.text }}</option>
                         </select>
                     </div>
                     <div class="search-btn">
-                        <button class="btn" type="submit" @click="searchModelLineup()">検索</button>
+                        <button class="btn" type="submit" @click="searchModelLineup(page)">検索</button>
                     </div>
                     <div class="search-clear-btn">
-                        <button class="clear-btn" type="submit" @click="clear()">クリア</button>
+                        <button class="clear-btn" type="submit" @click.prevent="clear()">クリア</button>
                     </div>
                 </div>
             </form>
@@ -75,7 +75,7 @@
         </div>
         <div class="paginate-contents">
             <div class="paginate" v-for="(pagination, index) in modelLineups.links" :key="index">
-                <button type="button" class="link-btn" :class="{ isSelected: pagination.active }" ><a href="#" @click.prevent="searchModelLineup(pagination.label)">{{ pagination.label.replaceAll('&amp;laquo; Previous', '<<').replaceAll('Next &amp;raquo;', '>>') }}</a></button>
+                <button type="submit" class="link-btn" :class="{ isSelected: pagination.active }" ><a href="#" @click.prevent="searchModelLineup(pagination.label)">{{ pagination.label.replaceAll('&amp;laquo; Previous', '<<').replaceAll('Next &amp;raquo;', '>>') }}</a></button>
             </div>
         </div>
     </div>
