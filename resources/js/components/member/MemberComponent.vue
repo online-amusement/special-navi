@@ -26,7 +26,7 @@
                     </select>
                 </div>
                 <div class="search-btn">
-                    <button type="button" class="sent-btn" @click.prevent="searchMember">検索</button>
+                    <button type="submit" class="sent-btn" @click="searchMember">検索</button>
                 </div>
                 <div class="clear-search-btn">
                     <button type="submit" class="sent-clear-btn" @click="clear">クリア</button>
@@ -80,7 +80,7 @@
         </div>
         <div class="paginate-contents">
             <div class="paginate" v-for="(pagination, index) in members.links" :key="index">
-                <button type="button" class="link-btn" :class="{ isSelected: pagination.active == true  }" ><a href="#" @click.prevent="searchMember(pagination.label)">{{ pagination.label.replaceAll('&amp;laquo; Previous', '<<').replaceAll('Next &amp;raquo;', '>>') }}</a></button>
+                <button type="submit" class="link-btn" :class="{ isSelected: pagination.active == true  }" ><a href="#" @click.prevent="searchMember(pagination.label)">{{ pagination.label.replaceAll('&amp;laquo; Previous', '<<').replaceAll('Next &amp;raquo;', '>>') }}</a></button>
             </div>
         </div>
     </div>

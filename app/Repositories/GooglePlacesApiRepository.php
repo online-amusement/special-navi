@@ -49,7 +49,7 @@ class GooglePlacesApiRepository
         $allResults = array_merge($allResults, $data["results"]);
         
         while($nextPage && count($allResults) < 60) {
-            sleep(2);
+            sleep(0.2);
 
             $params = [
                 'pagetoken' =>$nextPage,
@@ -69,10 +69,12 @@ class GooglePlacesApiRepository
         }
         $results = array_slice($allResults, 0, 60);
         
-        $this->googlePlaceApi->newQuery()->delete();
-        sleep(2);
-        DB::statement("ALTER TABLE google_place_apis AUTO_INCREMENT = 1");
-        
+        try {
+            DB::beginTransaction();
+            $this->googlePlaceApi->newQuery()->delete();
+            sleep(2);
+            DB::statement("ALTER TABLE google_place_apis AUTO_INCREMENT = 1");
+            $warehouse = [];
         foreach($results as $result) {
             //施設名
             $name = $result["name"] ?? null;
@@ -100,27 +102,31 @@ class GooglePlacesApiRepository
             $vicinity = $result["vicinity"] ?? null;
             //restaurant、cafe、bar、storeなどのカテゴリー
             $types = $result["types"][0] ?? null;
-            
-            $this->googlePlaceApi
-                ->newQuery()
-                ->create(
-                    [
-                        "lat" => $lat,
-                        "lng" => $lng,
-                        "icon" => $icon,
-                        "name" => $name,
-                        "open_now" => $openNow,
-                        "photos" => $photo,
-                        "place_id" => $placeId,
-                        "plus_code" => $plusCode,
-                        "price_level" => $priceLevel,
-                        "rating" => $rating,
-                        "user_ratings_total" => $userRatingsTotal,
-                        "vicinity" => $vicinity,
-                        "types" => $types
-                    ]
-                );
+
+            $warehouse[] = [
+                "lat" => $lat,
+                "lng" => $lng,
+                "icon" => $icon,
+                "name" => $name,
+                "open_now" => $openNow,
+                "photos" => $photo,
+                "place_id" => $placeId,
+                "plus_code" => $plusCode,
+                "price_level" => $priceLevel,
+                "rating" => $rating,
+                "user_ratings_total" => $userRatingsTotal,
+                "vicinity" => $vicinity,
+                "types" => $types
+            ];
         }  
+        $this->googlePlaceApi
+            ->newQuery()
+            ->insert(
+                $warehouse
+            );
+        }catch(\Exception $e) {
+            DB::rollBack();
+        }
     }
 
     public function responseMealInfo()
