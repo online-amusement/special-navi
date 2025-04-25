@@ -49,7 +49,7 @@ class GooglePlacesApiRepository
         $allResults = array_merge($allResults, $data["results"]);
         
         while($nextPage && count($allResults) < 60) {
-            sleep(0.2);
+            sleep(2);
 
             $params = [
                 'pagetoken' =>$nextPage,
@@ -72,7 +72,7 @@ class GooglePlacesApiRepository
         try {
             DB::beginTransaction();
             $this->googlePlaceApi->newQuery()->delete();
-            sleep(2);
+            sleep(0.2);
             DB::statement("ALTER TABLE google_place_apis AUTO_INCREMENT = 1");
             $warehouse = [];
         foreach($results as $result) {
