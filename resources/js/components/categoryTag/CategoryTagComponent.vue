@@ -23,7 +23,7 @@
                         </select>
                     </div>
                     <div class="search-btn">
-                        <button class="btn" type="submit">検索</button>
+                        <button class="btn" type="submit" @click.prevent="searchCategory(page)">検索</button>
                     </div>
                     <div class="search-clear-btn">
                         <button @click="clear()" class="clear-btn" type="submit">クリア</button>
@@ -66,7 +66,7 @@
         </div>
         <div class="paginate-contents">
             <div class="paginate" v-for="(pagination, index) in categorytags.links" :key="index">
-                <button type="button" class="link-btn" :class="{ isSelected: pagination.active == true  }" ><a href="#" @click.prevent="searchCategory(pagination.label)">{{ pagination.label.replaceAll('&amp;laquo; Previous', '<<').replaceAll('Next &amp;raquo;', '>>') }}</a></button>
+                <button type="submit" class="link-btn" :class="{ isSelected: pagination.active == true  }" ><a href="#" @click.prevent="searchCategory(pagination.label)">{{ pagination.label.replaceAll('&amp;laquo; Previous', '<<').replaceAll('Next &amp;raquo;', '>>') }}</a></button>
             </div>
         </div>
     </div>
@@ -74,7 +74,12 @@
 <script lang="ts" setup>
 import { onMounted, ref } from 'vue';
 
-interface Options {
+interface OptionsStatus {
+     text: string, 
+     value: number 
+}
+
+interface OptionsSort {
      text: string, 
      value: string 
 }
@@ -83,16 +88,17 @@ const props = defineProps(['categorytags']);
 const categorytags = ref(props.categorytags)
 const categorytagsData = ref(categorytags.value.data)
 const name = ref('');
-const statusOptions = ref<Options[]>([
+const statusOptions = ref<OptionsStatus[]>([
     {text: '表示', value: 0},
     {text: '非表示', value: 1}
 ])
-const sortOptions = ref<Options[]>([
+const sortOptions = ref<OptionsSort[]>([
     {text: '昇順', value: '昇順'},
     {text: '降順', value: '降順'}
 ])
 const selectedStatus = ref('');
 const selectedSort = ref('');
+const page = ref('1');
 
 onMounted(() => {
     console.log(categorytagsData.value)

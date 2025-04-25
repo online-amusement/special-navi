@@ -42,11 +42,11 @@ class MemberManagementRepository
         if($sort == "降順") {
             return $members 
                 ->orderBy("id", self::DESC)
-                ->paginate(5);
+                ->paginate(10);
         }else {
             return $members
                 ->orderBy("id", self::ASC)
-                ->paginate(5);
+                ->paginate(10);
         }
 
     }

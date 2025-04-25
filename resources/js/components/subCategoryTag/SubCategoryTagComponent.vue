@@ -28,7 +28,7 @@
                         </select>
                     </div>
                     <div class="search-btn">
-                        <button @click="searchSubCategory()" class="btn" type="submit">検索</button>
+                        <button @click.prevent="searchSubCategory(page)" class="btn" type="submit">検索</button>
                     </div>
                     <div class="search-clear-btn">
                         <button @click="clear()" class="clear-btn" type="submit">クリア</button>
@@ -75,7 +75,7 @@
         </div>
         <div class="paginate-contents">
             <div class="paginate" v-for="(pagination, index) in subCayegoryTag.links" :key="index">
-                <button type="button" class="link-btn" :class="{ isSelected: pagination.active }" ><a href="#" @click.prevent="searchSubCategory(pagination.label)">{{ pagination.label.replaceAll('&amp;laquo; Previous', '<<').replaceAll('Next &amp;raquo;', '>>') }}</a></button>
+                <button type="submit" class="link-btn" :class="{ isSelected: pagination.active }" ><a href="#" @click.prevent="searchSubCategory(pagination.label)">{{ pagination.label.replaceAll('&amp;laquo; Previous', '<<').replaceAll('Next &amp;raquo;', '>>') }}</a></button>
             </div>
         </div>
     </div>
@@ -83,9 +83,14 @@
 <script lang="ts" setup>
 import { onMounted, ref } from 'vue';
 
-interface Options {
-    text: string,
-    value: string
+interface OptionsStatus {
+     text: string, 
+     value: number 
+}
+
+interface OptionsSort {
+     text: string, 
+     value: string 
 }
 
 const props = defineProps(['sub_category']);
@@ -93,16 +98,17 @@ const subCayegoryTag = ref(props.sub_category)
 const subCayegoryTagData = ref(subCayegoryTag.value.data)
 const categoryTagId = ref();
 const name = ref('');
-const optionStatus = ref<Options[]>([
+const optionStatus = ref<OptionsStatus[]>([
     {text: '表示', value: 0},
     {text: '非表示', value: 1}
 ])
-const optionSort = ref<Options[]>([
+const optionSort = ref<OptionsSort[]>([
     {text: '昇順', value: '昇順'},
     {text: '降順', value: '降順'}
 ])
 const selectedStatus = ref('');
 const selectedSort = ref('');
+const page = ref('1');
 
 onMounted(() => {
     console.log(props.sub_category)

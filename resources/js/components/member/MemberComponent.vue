@@ -26,7 +26,7 @@
                     </select>
                 </div>
                 <div class="search-btn">
-                    <button type="submit" class="sent-btn" @click="searchMember">検索</button>
+                    <button type="submit" class="sent-btn" @click="searchMember(page)">検索</button>
                 </div>
                 <div class="clear-search-btn">
                     <button type="submit" class="sent-clear-btn" @click="clear">クリア</button>
@@ -90,23 +90,31 @@
 import { Value } from "sass";
 import { ref, onMounted } from "vue";
 
-interface Option { text: string; value: string; }
+interface OptionsStatus {
+     text: string, 
+     value: number 
+}
+
+interface OptionsSort {
+     text: string, 
+     value: string 
+}
 
 const props = defineProps(['members'])
 const members = ref(props.members)
 const memberData = ref(members.value.data)
-const name = ref(null);
-const email = ref(null);
-const statusOptions = ref<Option[]>([
-    { text: '仮登録', value: "0"},
-    { text: '通常', value: "1"},
-    { text: '退会', value: "2"},
+const name = ref("");
+const email = ref("");
+const statusOptions = ref<OptionsStatus[]>([
+    { text: '仮登録', value: 0},
+    { text: '通常', value: 1},
+    { text: '退会', value: 2},
 ]);
-const sortOptions = ref<Option[]>([
+const sortOptions = ref<OptionsSort[]>([
     { text: '昇順', value: "昇順"},
     { text: '降順', value: "降順"},
 ])
-const selectedStatus = ref("");
+const selectedStatus = ref();
 const selectedSort = ref("");
 const page = ref("1");
 
