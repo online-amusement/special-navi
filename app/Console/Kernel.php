@@ -13,6 +13,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule): void
     {
         $schedule->command('meal:update-info')->hourly();
+        $schedule->command('shopping:update-info')->hourly();
     }
 
     /**
