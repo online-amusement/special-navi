@@ -35,15 +35,15 @@ class SubCategoryTagRepository
     {
         $subCategoryTags = $this->subCategoryTag->newQuery();
         if($categoryTagId != null) {
-            $subCategoryTags = $this->subCategoryTag->where("category_tag_id", $categoryTagId);
+            $subCategoryTags = $subCategoryTags->where("category_tag_id", $categoryTagId);
         }
         if($name != null)
         {
-            $subCategoryTags = $this->subCategoryTag->where("name", $name);
+            $subCategoryTags = $subCategoryTags->where("name", $name);
         }
         if($status != null)
         {
-            $subCategoryTags = $this->subCategoryTag->where("status", $status);
+            $subCategoryTags = $subCategoryTags->where("status", $status);
         }
         if($sort == "降順") {
             return $subCategoryTags
