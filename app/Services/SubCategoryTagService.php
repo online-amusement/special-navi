@@ -4,7 +4,7 @@ namespace App\Services;
 
 use App\Repositories\SubCategoryTagRepository;
 
-class SubCategoryTagRepositoryService
+class SubCategoryTagService
 {
     protected $subCategoryTagRepository;
 

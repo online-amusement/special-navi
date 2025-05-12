@@ -16,19 +16,18 @@
                     </div>
                     <div class="search-status">
                         <label class="status-title">ステータス</label>
-                        <select v-model="selectedStatus" type="text" class="status" name="searchStatus" id="searchStatus">
-                            <option v-for="option in optionStatus" :key="option.value">{{ option.text }}</option>
-                            
+                        <select v-model="selectedStatus" class="status" name="searchStatus" id="searchStatus">
+                            <option v-for="option in statusOptions" :key="option.value" :value="option.value">{{ option.text }}</option>
                         </select>
                     </div>
                     <div class="search-sort">
                         <label class="sort-title">ソート</label>
                         <select v-model="selectedSort" class="sort" name="searchSort" id="searchSort">
-                            <option v-for="option in optionStatus" :key="option.value">{{ option.text }}</option>
+                            <option v-for="option in sortOptions" :key="option.value">{{ option.text }}</option>
                         </select>
                     </div>
                     <div class="search-btn">
-                        <button @click.prevent="searchSubCategory(page)" class="btn" type="submit">検索</button>
+                        <button @click="searchSubCategory(page)" class="btn" type="submit">検索</button>
                     </div>
                     <div class="search-clear-btn">
                         <button @click="clear()" class="clear-btn" type="submit">クリア</button>
@@ -81,6 +80,7 @@
     </div>
 </template>
 <script lang="ts" setup>
+import { Value } from 'sass';
 import { onMounted, ref } from 'vue';
 
 interface OptionsStatus {
@@ -98,15 +98,15 @@ const subCayegoryTag = ref(props.sub_category)
 const subCayegoryTagData = ref(subCayegoryTag.value.data)
 const categoryTagId = ref();
 const name = ref('');
-const optionStatus = ref<OptionsStatus[]>([
+const statusOptions = ref<OptionsStatus[]>([
     {text: '表示', value: 0},
     {text: '非表示', value: 1}
+]);
+const sortOptions = ref<OptionsSort[]>([
+    { text: '昇順', value: "昇順"},
+    { text: '降順', value: "降順"},
 ])
-const optionSort = ref<OptionsSort[]>([
-    {text: '昇順', value: '昇順'},
-    {text: '降順', value: '降順'}
-])
-const selectedStatus = ref('');
+const selectedStatus = ref();
 const selectedSort = ref('');
 const page = ref('1');
 

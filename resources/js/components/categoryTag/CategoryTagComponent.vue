@@ -12,8 +12,8 @@
                     </div>
                     <div class="search-status">
                         <label class="status-title">ステータス</label>
-                        <select v-model="selectedStatus" type="text" class="status" name="searchStatus" id="searchStatus">
-                            <option v-for="option in statusOptions" :key="option.value">{{ option.text }}</option>
+                        <select v-model="selectedStatus" class="status" name="searchStatus" id="searchStatus">
+                            <option v-for="option in statusOptions" :key="option.value" :value="option.value">{{ option.text }}</option>
                         </select>
                     </div>
                     <div class="search-sort">
@@ -23,7 +23,7 @@
                         </select>
                     </div>
                     <div class="search-btn">
-                        <button class="btn" type="submit" @click.prevent="searchCategory(page)">検索</button>
+                        <button class="btn" type="submit" @click="searchCategory(page)">検索</button>
                     </div>
                     <div class="search-clear-btn">
                         <button @click="clear()" class="clear-btn" type="submit">クリア</button>
@@ -96,7 +96,7 @@ const sortOptions = ref<OptionsSort[]>([
     {text: '昇順', value: '昇順'},
     {text: '降順', value: '降順'}
 ])
-const selectedStatus = ref('');
+const selectedStatus = ref();
 const selectedSort = ref('');
 const page = ref('1');
 
